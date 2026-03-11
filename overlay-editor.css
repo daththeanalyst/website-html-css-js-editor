@@ -1,0 +1,858 @@
+/*
+ * overlay-editor.css — GlassStudio v1.1
+ * Extreme Glassmorphism Studio Workspace
+ */
+
+:root {
+    /* Extreme Glass Design Variables */
+    --ai-editor-bg: rgba(18, 18, 28, 0.4);
+    --ai-editor-blur: blur(48px) saturate(160%);
+    --ai-editor-border: rgba(255, 255, 255, 0.12);
+    --ai-editor-text: #f8fafc;
+    --ai-editor-muted: #94a3b8;
+    --ai-editor-primary: #38bdf8;
+    --ai-editor-primary-hover: #0ea5e9;
+    --ai-editor-shadow-inset: inset 1px 0 0 rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    --ai-editor-shadow-drop: 10px 0 40px rgba(0, 0, 0, 0.6);
+    --ai-sidebar-width: 320px;
+}
+
+/* Base DOM shifts to accommodate LEFT sidebar */
+body.ai-editor-open {
+    padding-left: var(--ai-sidebar-width) !important;
+    transition: padding-left 0.4s cubic-bezier(0.16, 1, 0.29, 0.99);
+}
+
+body.ai-editor-closed {
+    padding-left: 0 !important;
+    transition: padding-left 0.4s cubic-bezier(0.16, 1, 0.29, 0.99);
+}
+
+/* The Fixed Left Sidebar Container - EXTREME GLASS */
+#ai-floating-editor-container {
+    position: fixed;
+    z-index: 999999;
+    top: 0;
+    left: 0;
+    width: var(--ai-sidebar-width);
+    height: 100vh;
+    background: var(--ai-editor-bg);
+    backdrop-filter: var(--ai-editor-blur);
+    -webkit-backdrop-filter: var(--ai-editor-blur);
+    display: flex;
+    flex-direction: column;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--ai-editor-text);
+    box-shadow: var(--ai-editor-shadow-inset), var(--ai-editor-shadow-drop);
+    border-right: 1px solid var(--ai-editor-border);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.29, 0.99);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Scrollbar */
+#ai-floating-editor-container::-webkit-scrollbar { width: 6px; }
+#ai-floating-editor-container::-webkit-scrollbar-track { background: transparent; }
+#ai-floating-editor-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+/* Hide State */
+#ai-floating-editor-container.ai-editor-hidden {
+    transform: translateX(-100%);
+}
+
+#ai-floating-editor-container.ai-editor-active {
+    transform: translateX(0);
+}
+
+/* Sidebar Top Bar & Scope Selector */
+.ai-editor-top-bar {
+    padding: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ai-editor-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ai-editor-title {
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Hide/Show Workspace Toggle Button */
+.ai-editor-hide-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--ai-editor-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.ai-editor-hide-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+.ai-editor-hide-btn svg { width: 16px; height: 16px; }
+
+/* The Floating Show Button (when sidebar is hidden) */
+#ai-show-sidebar-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 999998;
+    background: var(--ai-editor-bg);
+    backdrop-filter: var(--ai-editor-blur);
+    border: 1px solid var(--ai-editor-border);
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--ai-editor-shadow-inset), 0 4px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: scale(0);
+    opacity: 0;
+}
+#ai-show-sidebar-btn.visible {
+    transform: scale(1);
+    opacity: 1;
+}
+#ai-show-sidebar-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255,255,255,0.3);
+}
+
+/* Scope Toggle */
+.ai-scope-toggle {
+    display: flex;
+    background: rgba(0,0,0,0.4);
+    border-radius: 8px;
+    padding: 4px;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.ai-scope-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--ai-editor-muted);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ai-scope-btn.active {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+/* Tabs Header */
+.ai-editor-tabs-header {
+    display: flex;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 0 8px;
+}
+
+.ai-tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--ai-editor-muted);
+    padding: 12px 0;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+}
+
+.ai-tab-btn:hover { color: var(--ai-editor-text); }
+.ai-tab-btn.active {
+    color: var(--ai-editor-primary);
+    border-bottom-color: var(--ai-editor-primary);
+}
+
+/* Tab Content Areas */
+.ai-tab-content {
+    display: none;
+    padding: 16px;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+}
+.ai-tab-content.active { display: flex; }
+
+/* Form Groups */
+.ai-panel-section { display: flex; flex-direction: column; gap: 12px; }
+.ai-panel-section.row-aligned { flex-direction: row; gap: 8px; align-items: center; }
+.ai-panel-section.side-by-side { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+.ai-section-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--ai-editor-muted);
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+/* Toolbars */
+.ai-editor-toolbar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ai-editor-toolbar-group {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Buttons */
+.ai-editor-btn {
+    background: transparent;
+    border: none;
+    color: var(--ai-editor-text);
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 12px;
+}
+.ai-editor-btn.text-btn { width: auto; padding: 0 10px; font-weight: 600;}
+
+.ai-editor-btn:hover { background: rgba(255, 255, 255, 0.1); }
+.ai-editor-btn.active { background: rgba(255, 255, 255, 0.2); color: #fff; }
+.ai-editor-btn svg { width: 16px; height: 16px; }
+
+/* Swatches */
+.ai-swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+    gap: 8px;
+}
+
+.ai-color-swatch, .ai-gradient-swatch, .ai-shadow-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    color: rgba(255,255,255,0.8);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.ai-shadow-swatch { border-radius: 6px; }
+
+.ai-color-swatch:hover, .ai-gradient-swatch:hover, .ai-shadow-swatch:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+}
+
+.ai-color-swatch.active, .ai-gradient-swatch.active, .ai-shadow-swatch.active {
+    border-color: #fff;
+    box-shadow: 0 0 0 2px var(--ai-editor-primary);
+}
+
+/* Custom Native Color Picker */
+.ai-color-picker-wrapper {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ai-color-picker-input {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    background: transparent;
+}
+
+/* Select Dropdown */
+.ai-select {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+}
+.ai-select option { background: #12121c; }
+
+/* Sliders */
+.ai-slider-container { display: flex; flex-direction: column; gap: 4px; }
+.ai-slider-container.side { width: 100%; }
+
+.ai-slider-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--ai-editor-muted);
+}
+
+.ai-slider-val { color: var(--ai-editor-text); font-family: monospace; font-size: 11px; }
+.ai-slider { width: 100%; -webkit-appearance: none; appearance: none; background: transparent; padding: 6px 0; }
+
+.ai-slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    border: 1px solid rgba(0,0,0,0.2);
+}
+
+.ai-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.5);
+    margin-top: -6px;
+    cursor: grab;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+.ai-slider::-webkit-slider-thumb:active { cursor: grabbing; background: var(--ai-editor-primary); }
+
+/* Config Wrapper */
+.ai-config-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: rgba(0,0,0,0.2);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Actions & Presets */
+.ai-primary-action-btn {
+    width: 100%; padding: 10px;
+    background: var(--ai-editor-primary); color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    border: none; border-radius: 6px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.ai-primary-action-btn:hover { background: var(--ai-editor-primary-hover); box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4), inset 0 1px 0 rgba(255,255,255,0.2); }
+
+.ai-secondary-action-btn {
+    width: 100%; padding: 10px;
+    background: rgba(255,255,255,0.05); color: white;
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+}
+.ai-secondary-action-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+
+.ai-presets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.ai-preset-block {
+    position: relative;
+    height: 40px; border-radius: 6px; cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.1); transition: transform 0.2s;
+}
+.ai-preset-block:hover { transform: scale(1.05); border-color: white; }
+.ai-preset-delete {
+    position: absolute; top: -4px; right: -4px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: rgba(244, 63, 94, 0.9); color: white;
+    border: none; font-size: 10px; line-height: 1;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s;
+    display: flex; align-items: center; justify-content: center;
+}
+.ai-preset-block:hover .ai-preset-delete { opacity: 1; }
+
+/* Active Selection Style (Figma-Style Glass Highlight) */
+[data-editable-active="true"] {
+    position: relative;
+    z-index: 9999;
+    outline: 2px solid var(--ai-editor-primary) !important;
+    outline-offset: 4px;
+    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2), 0 10px 30px rgba(0,0,0,0.5) !important;
+    border-radius: 4px;
+    transition: outline 0.1s ease-out, outline-offset 0.1s ease-out;
+}
+
+/* Page Editing Target Ring */
+body.ai-page-targeting-active {
+    outline: 4px solid var(--ai-editor-primary) !important;
+    outline-offset: -4px;
+}
+
+/* Spinner Overlay */
+.ai-editor-loading-overlay {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 100;
+}
+.ai-editor-loading-overlay.active { opacity: 1; pointer-events: auto; }
+.ai-spinner {
+    width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.1);
+    border-top-color: var(--ai-editor-primary); border-radius: 50%;
+    animation: ai-spin 1s linear infinite;
+}
+@keyframes ai-spin { to { transform: rotate(360deg); } }
+
+/* Element Tree */
+.ai-element-tree {
+    display: flex; flex-direction: column; gap: 4px;
+    max-height: 250px; overflow-y: auto;
+}
+.ai-tree-node {
+    padding: 6px 10px; font-size: 11px; font-family: monospace;
+    color: var(--ai-editor-muted); background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.05); border-radius: 4px;
+    cursor: pointer; transition: all 0.15s;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ai-tree-node:hover { background: rgba(255,255,255,0.08); color: var(--ai-editor-text); }
+.ai-tree-node.ai-tree-active {
+    border-color: var(--ai-editor-primary); color: var(--ai-editor-primary);
+    background: rgba(56, 189, 248, 0.08);
+}
+
+/* Live CSS Editor */
+.ai-code-editor {
+    width: 100%; background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;
+    color: #a5f3fc; font-family: 'Courier New', monospace; font-size: 11px;
+    padding: 10px; resize: vertical; outline: none;
+    box-sizing: border-box;
+}
+.ai-code-editor:focus { border-color: var(--ai-editor-primary); }
+
+/* Export Footer */
+.ai-export-footer {
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ─── Multi-Format Export Selector ─────────────────────────────────────── */
+.ai-export-format-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+}
+
+.ai-export-format-row .ai-secondary-action-btn {
+    padding: 6px 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.ai-export-format-active {
+    background: rgba(56, 189, 248, 0.15) !important;
+    border-color: var(--ai-editor-primary) !important;
+    color: var(--ai-editor-primary) !important;
+}
+
+/* ─── WCAG Contrast Checker ────────────────────────────────────────────── */
+.ai-contrast-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 8px 12px;
+}
+
+.ai-contrast-ratio {
+    font-size: 18px;
+    font-weight: 700;
+    font-family: monospace;
+    color: var(--ai-editor-text);
+}
+
+.ai-contrast-badges {
+    display: flex;
+    gap: 6px;
+}
+
+.ai-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    background: rgba(255,255,255,0.05);
+    color: var(--ai-editor-muted);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.ai-badge-pass {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.ai-badge-fail {
+    background: rgba(244, 63, 94, 0.2);
+    color: #f43f5e;
+    border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+/* ─── Light Theme Overrides ────────────────────────────────────────────── */
+#ai-floating-editor-container[data-theme="light"] .ai-scope-toggle {
+    background: rgba(255,255,255,0.6);
+    border-color: rgba(0,0,0,0.1);
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-scope-btn {
+    color: #64748b;
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-scope-btn.active {
+    background: rgba(0,0,0,0.1);
+    color: #0f172a;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-editor-title {
+    text-shadow: none;
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-select {
+    background: rgba(255,255,255,0.8);
+    color: #0f172a;
+    border-color: rgba(0,0,0,0.15);
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-select option {
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-code-editor {
+    background: rgba(255,255,255,0.8);
+    color: #0369a1;
+    border-color: rgba(0,0,0,0.15);
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-editor-toolbar-group {
+    background: rgba(0,0,0,0.05);
+    border-color: rgba(0,0,0,0.08);
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-config-wrapper {
+    background: rgba(0,0,0,0.04);
+    border-color: rgba(0,0,0,0.08);
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-tree-node {
+    background: rgba(0,0,0,0.04);
+    color: #475569;
+    border-color: rgba(0,0,0,0.08);
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-tree-node:hover {
+    background: rgba(0,0,0,0.08);
+    color: #0f172a;
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-contrast-display {
+    background: rgba(0,0,0,0.04);
+    border-color: rgba(0,0,0,0.1);
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-editor-hide-btn {
+    color: #64748b;
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-editor-hide-btn:hover {
+    background: rgba(0,0,0,0.08);
+    color: #0f172a;
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-secondary-action-btn {
+    color: #334155;
+    border-color: rgba(0,0,0,0.12);
+    background: rgba(0,0,0,0.04);
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-secondary-action-btn:hover {
+    background: rgba(0,0,0,0.08);
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-slider::-webkit-slider-runnable-track {
+    background: rgba(0,0,0,0.1);
+    border-color: rgba(0,0,0,0.1);
+}
+
+#ai-floating-editor-container[data-theme="light"] .ai-slider::-webkit-slider-thumb {
+    background: #334155;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-color: rgba(0,0,0,0.2);
+}
+
+/* ─── Midnight Theme Overrides ─────────────────────────────────────────── */
+#ai-floating-editor-container[data-theme="midnight"] .ai-scope-toggle {
+    background: rgba(0,0,0,0.5);
+    border-color: rgba(139, 92, 246, 0.15);
+}
+
+#ai-floating-editor-container[data-theme="midnight"] .ai-scope-btn.active {
+    background: rgba(139, 92, 246, 0.2);
+    box-shadow: 0 2px 5px rgba(88, 28, 135, 0.3);
+}
+
+#ai-floating-editor-container[data-theme="midnight"] .ai-editor-toolbar-group {
+    background: rgba(0,0,0,0.4);
+    border-color: rgba(139, 92, 246, 0.1);
+}
+
+#ai-floating-editor-container[data-theme="midnight"] .ai-config-wrapper {
+    background: rgba(0,0,0,0.3);
+    border-color: rgba(139, 92, 246, 0.1);
+}
+
+/* ─── v1.1: Batch Edit Badge ──────────────────────────────────────────── */
+.ai-batch-badge {
+    display: none;
+    align-items: center;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(168, 85, 247, 0.25);
+    color: #a855f7;
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    margin-left: 8px;
+}
+
+[data-batch-selected="true"] {
+    outline: 2px dashed #a855f7 !important;
+    outline-offset: 2px;
+}
+
+/* ─── v1.1: History Panel ─────────────────────────────────────────────── */
+.ai-history-entry {
+    padding: 5px 8px;
+    font-size: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.ai-history-entry:hover {
+    background: rgba(255,255,255,0.08);
+}
+.ai-history-current {
+    border-color: var(--ai-editor-primary);
+    background: rgba(56, 189, 248, 0.08);
+}
+.ai-history-label {
+    color: var(--ai-editor-text);
+    font-weight: 500;
+    text-transform: capitalize;
+}
+.ai-history-meta {
+    color: var(--ai-editor-muted);
+    font-family: monospace;
+    font-size: 9px;
+}
+
+/* ─── v1.1: Preset Categories ─────────────────────────────────────────── */
+.ai-preset-categories {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+.ai-preset-cat-btn {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--ai-editor-muted);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.ai-preset-cat-btn:hover {
+    background: rgba(255,255,255,0.08);
+    color: var(--ai-editor-text);
+}
+.ai-preset-cat-btn.active {
+    background: rgba(56, 189, 248, 0.15);
+    border-color: var(--ai-editor-primary);
+    color: var(--ai-editor-primary);
+}
+
+/* ─── v1.1: Responsive Preview Bar ────────────────────────────────────── */
+.ai-responsive-bar {
+    display: flex;
+    gap: 4px;
+    padding: 8px 20px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    align-items: center;
+}
+.ai-responsive-btn {
+    flex: 1;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--ai-editor-muted);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 5px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.ai-responsive-btn:hover {
+    background: rgba(255,255,255,0.08);
+    color: var(--ai-editor-text);
+}
+.ai-responsive-btn.active {
+    background: rgba(56, 189, 248, 0.15);
+    border-color: var(--ai-editor-primary);
+    color: var(--ai-editor-primary);
+}
+.ai-responsive-label {
+    font-size: 10px;
+    color: var(--ai-editor-muted);
+    font-family: monospace;
+    margin-left: 4px;
+    min-width: 40px;
+}
+
+/* ─── v1.1: Keyboard Shortcut Overlay ─────────────────────────────────── */
+#ai-shortcut-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 9999999;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ai-shortcut-modal {
+    background: rgba(18, 18, 28, 0.85);
+    backdrop-filter: blur(32px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    color: var(--ai-editor-text);
+}
+.ai-shortcut-modal h3 {
+    margin: 0 0 20px 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+.ai-shortcut-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.ai-shortcut-row:last-child { border-bottom: none; }
+.ai-shortcut-keys {
+    font-family: monospace;
+    font-size: 12px;
+    background: rgba(255,255,255,0.1);
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--ai-editor-primary);
+}
+.ai-shortcut-desc {
+    font-size: 12px;
+    color: var(--ai-editor-muted);
+}
+
+/* ─── v1.1: Light Theme additions ─────────────────────────────────────── */
+#ai-floating-editor-container[data-theme="light"] .ai-preset-cat-btn {
+    background: rgba(0,0,0,0.05);
+    border-color: rgba(0,0,0,0.1);
+    color: #64748b;
+}
+#ai-floating-editor-container[data-theme="light"] .ai-preset-cat-btn.active {
+    background: rgba(59,130,246,0.1);
+    color: #3b82f6;
+    border-color: #3b82f6;
+}
+#ai-floating-editor-container[data-theme="light"] .ai-responsive-btn {
+    background: rgba(0,0,0,0.05);
+    border-color: rgba(0,0,0,0.1);
+    color: #64748b;
+}
+#ai-floating-editor-container[data-theme="light"] .ai-responsive-btn.active {
+    background: rgba(59,130,246,0.1);
+    color: #3b82f6;
+    border-color: #3b82f6;
+}
+#ai-floating-editor-container[data-theme="light"] .ai-history-entry {
+    background: rgba(0,0,0,0.04);
+    border-color: rgba(0,0,0,0.08);
+}
+#ai-floating-editor-container[data-theme="light"] .ai-history-entry:hover {
+    background: rgba(0,0,0,0.08);
+}

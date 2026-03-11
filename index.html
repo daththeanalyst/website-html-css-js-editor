@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlassStudio — Visual Website Editor</title>
+    <meta name="description" content="A zero-dependency visual CSS, HTML & JS editor you can drop into any website. Edit styles, layouts, typography, and effects in real time.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="overlay-editor.css">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #08090c;
+            color: #e2e8f0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            position: relative;
+            text-align: center;
+            padding: 100px 24px 80px;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -40%; left: 50%;
+            transform: translateX(-50%);
+            width: 900px; height: 900px;
+            background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, rgba(59,130,246,0.08) 40%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(168,85,247,0.15);
+            border: 1px solid rgba(168,85,247,0.3);
+            color: #c084fc;
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 24px;
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, #a855f7, #ec4899, #f43f5e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-sub {
+            color: #94a3b8;
+            font-size: 1.15rem;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        .hero-cta {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 24px rgba(168,85,247,0.35);
+        }
+        .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(168,85,247,0.5); }
+        .hero-hint {
+            display: block;
+            margin-top: 16px;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        /* ── Section Layout ── */
+        .section { padding: 80px 24px; max-width: 1100px; margin: 0 auto; }
+        .section-label {
+            display: inline-block;
+            color: #a855f7;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .section-desc {
+            color: #94a3b8;
+            font-size: 1.05rem;
+            max-width: 650px;
+            margin-bottom: 48px;
+        }
+
+        /* ── Features Grid ── */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .feature-card {
+            background: rgba(30,34,43,0.6);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 28px;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .feature-card:hover { border-color: rgba(168,85,247,0.3); transform: translateY(-4px); }
+        .feature-icon {
+            width: 40px; height: 40px;
+            background: rgba(168,85,247,0.12);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 16px;
+            font-size: 1.3rem;
+        }
+        .feature-card h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .feature-card p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* ── Live Demo Section ── */
+        .demo-section {
+            background: linear-gradient(180deg, rgba(168,85,247,0.04) 0%, transparent 100%);
+            border-top: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 80px 24px;
+        }
+        .demo-inner { max-width: 1100px; margin: 0 auto; }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+        .demo-card {
+            background: #1a1e27;
+            border: 1px solid #2d3342;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .demo-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: #f8fafc;
+        }
+        .demo-card p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+        .demo-btn {
+            display: inline-block;
+            background: #3b82f6;
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .demo-btn:hover { background: #2563eb; }
+        .demo-btn.secondary {
+            background: transparent;
+            border: 1px solid #475569;
+            color: #94a3b8;
+        }
+        .demo-btn.secondary:hover { border-color: #a855f7; color: #c084fc; }
+
+        .demo-img-wrap {
+            text-align: center;
+            margin-top: 24px;
+        }
+        .demo-img-wrap img {
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            max-width: 100%;
+            height: auto;
+        }
+
+        .demo-layout-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .demo-tag {
+            background: rgba(168,85,247,0.15);
+            color: #c084fc;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 500;
+        }
+
+        /* ── How To Use ── */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+        .step-card {
+            background: rgba(30,34,43,0.4);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 28px;
+            position: relative;
+        }
+        .step-num {
+            position: absolute;
+            top: -14px; left: 24px;
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: #fff;
+            width: 28px; height: 28px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .step-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            margin-top: 4px;
+        }
+        .step-card p {
+            color: #94a3b8;
+            font-size: 0.88rem;
+        }
+        .step-card code {
+            display: block;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: #c084fc;
+            font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        /* ── Shortcuts Table ── */
+        .shortcuts-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 32px;
+        }
+        .shortcuts-table th {
+            text-align: left;
+            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .shortcuts-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 0.9rem;
+        }
+        .shortcuts-table td:first-child {
+            color: #c084fc;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.82rem;
+            white-space: nowrap;
+        }
+        .shortcuts-table tr:hover { background: rgba(255,255,255,0.02); }
+
+        /* ── Footer ── */
+        .footer {
+            text-align: center;
+            padding: 48px 24px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            color: #475569;
+            font-size: 0.85rem;
+        }
+        .footer a { color: #a855f7; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        /* ── Editable element indicator ── */
+        [data-editable="true"] {
+            cursor: pointer;
+            transition: outline 0.2s ease, background-color 0.2s ease;
+        }
+        [data-editable="true"]:hover {
+            outline: 2px dashed #6366f1;
+            outline-offset: 4px;
+            background-color: rgba(99,102,241,0.08);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            .hero { padding: 60px 20px 50px; }
+            .section { padding: 50px 20px; }
+            .demo-section { padding: 50px 20px; }
+            .features-grid, .demo-grid, .steps-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══ HERO ═══ -->
+    <section class="hero">
+        <span class="hero-badge">v1.1 — Open Source</span>
+        <h1><span class="gradient">GlassStudio</span><br>Visual Website Editor</h1>
+        <p class="hero-sub">A zero-dependency, drop-in visual editor for any website. Edit CSS, HTML, layouts, effects, and typography — all in real time with a glassmorphism UI.</p>
+        <a href="#demo" class="hero-cta">Try the Live Demo</a>
+        <span class="hero-hint">No install needed — just scroll down and click any element</span>
+    </section>
+
+    <!-- ═══ FEATURES ═══ -->
+    <section class="section">
+        <span class="section-label">Features</span>
+        <h2 class="section-title">Everything you need to edit any website</h2>
+        <p class="section-desc">11 professional editing tools packed into a single file. No build step, no dependencies, no framework lock-in.</p>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>Visual Style Editing</h3>
+                <p>Colors, backgrounds, gradients, borders, opacity, spacing — all controlled via sliders and swatches with live preview.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📐</div>
+                <h3>Flexbox & Grid Controls</h3>
+                <p>Toggle display modes, set direction, justify, align, gap, and wrap — visually, without writing a single line of CSS.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔤</div>
+                <h3>Typography Engine</h3>
+                <p>Font family, weight, size, letter-spacing, line-height, text transform, and text shadow — all with inline editing.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌈</div>
+                <h3>Gradient Builder</h3>
+                <p>Pick start/end colors, set angle, preview in real time, and apply linear gradients to any element instantly.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✨</div>
+                <h3>CSS Transition Builder</h3>
+                <p>Set property, duration, easing, and hover scale — then preview the animation live before applying it.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>Copy & Paste Styles</h3>
+                <p>Ctrl+Shift+C to copy an element's full style, Ctrl+Shift+V to paste it onto any other element. Works with batch.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📏</div>
+                <h3>Spacing Visualizer</h3>
+                <p>Toggle an overlay showing padding (green) and margin (blue) on any element — updates live as you scroll.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Responsive Preview</h3>
+                <p>Switch between Mobile (375px), Tablet (768px), and Desktop widths to preview your designs responsively.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Undo / Redo + History</h3>
+                <p>Full 50-state undo/redo stack with a timestamped history panel. Click any entry to jump back instantly.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👆</div>
+                <h3>Batch Editing</h3>
+                <p>Shift+click to select multiple elements. All style changes apply to the entire batch simultaneously.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💾</div>
+                <h3>Presets & Export</h3>
+                <p>Save style presets by category, export as clean HTML, CSS, React JSX, or Tailwind classes. Download or copy.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⌨️</div>
+                <h3>Keyboard Shortcuts</h3>
+                <p>Full shortcut support — undo, redo, toggle sidebar, switch tabs, copy/paste styles, and more. Press ? to see all.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ LIVE DEMO ═══ -->
+    <section class="demo-section" id="demo">
+        <div class="demo-inner">
+            <span class="section-label">Live Demo</span>
+            <h2 class="section-title">Click any element below to start editing</h2>
+            <p class="section-desc">Every element with a dashed outline on hover is editable. The GlassStudio sidebar will open automatically. Try changing colors, spacing, fonts, and effects.</p>
+
+            <div class="demo-grid">
+                <!-- Card 1: Text editing -->
+                <div class="demo-card" data-editable="true">
+                    <h3 data-editable="true">Welcome to GlassStudio</h3>
+                    <p data-editable="true">Click this text to edit it inline. Change the font, color, size, weight, letter-spacing, or apply text shadows — all from the sidebar panel.</p>
+                    <a href="#" class="demo-btn" data-editable="true">Edit This Button</a>
+                </div>
+
+                <!-- Card 2: Layout demo -->
+                <div class="demo-card" data-editable="true">
+                    <h3 data-editable="true">Layout & Spacing</h3>
+                    <p data-editable="true">Select this card and try adjusting padding, margin, border-radius, and border styles. Toggle the Spacing Visualizer to see padding and margin overlays.</p>
+                    <div class="demo-layout-row" data-editable="true">
+                        <span class="demo-tag" data-editable="true">Flexbox</span>
+                        <span class="demo-tag" data-editable="true">Grid</span>
+                        <span class="demo-tag" data-editable="true">Spacing</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Effects demo -->
+                <div class="demo-card" data-editable="true">
+                    <h3 data-editable="true">Effects & Transitions</h3>
+                    <p data-editable="true">Apply box shadows, gradients, opacity changes, and CSS transitions. Use the Transition Builder to set up hover animations with live preview.</p>
+                    <button class="demo-btn secondary" data-editable="true">Hover Effect Target</button>
+                </div>
+            </div>
+
+            <!-- Image demo -->
+            <div class="demo-img-wrap" style="margin-top: 32px;">
+                <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 16px;" data-editable="true">Click the image to resize, apply filters, and adjust layout</p>
+                <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=600&auto=format&fit=crop"
+                     alt="Glass sphere"
+                     data-editable="true"
+                     style="width: 400px; border-radius: 16px;" />
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ HOW TO USE ═══ -->
+    <section class="section">
+        <span class="section-label">Quick Start</span>
+        <h2 class="section-title">Add GlassStudio to any website in 30 seconds</h2>
+        <p class="section-desc">Two files. Zero dependencies. Just drop them in and add <code style="background:rgba(168,85,247,0.15);padding:2px 8px;border-radius:4px;color:#c084fc;font-size:0.9rem;">data-editable="true"</code> to any element you want to be editable.</p>
+
+        <div class="steps-grid">
+            <div class="step-card">
+                <span class="step-num">1</span>
+                <h3>Include the files</h3>
+                <p>Add the CSS and JS files to your HTML page.</p>
+                <code>&lt;link rel="stylesheet" href="overlay-editor.css"&gt;
+&lt;script src="overlay-editor.js"&gt;&lt;/script&gt;</code>
+            </div>
+            <div class="step-card">
+                <span class="step-num">2</span>
+                <h3>Mark editable elements</h3>
+                <p>Add the data attribute to any element you want users to edit.</p>
+                <code>&lt;h1 data-editable="true"&gt;
+  Edit me!
+&lt;/h1&gt;</code>
+            </div>
+            <div class="step-card">
+                <span class="step-num">3</span>
+                <h3>Done — it auto-boots</h3>
+                <p>GlassStudio initializes automatically. You can also control it via the API.</p>
+                <code>GlassStudio.init();
+GlassStudio.on('change', (e) =&gt; {
+  console.log('Changed:', e);
+});</code>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ KEYBOARD SHORTCUTS ═══ -->
+    <section class="section">
+        <span class="section-label">Shortcuts</span>
+        <h2 class="section-title">Keyboard shortcuts</h2>
+        <p class="section-desc">Press <code style="background:rgba(168,85,247,0.15);padding:2px 8px;border-radius:4px;color:#c084fc;font-size:0.9rem;">?</code> at any time to see this list in the editor.</p>
+
+        <table class="shortcuts-table">
+            <thead>
+                <tr><th>Shortcut</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Ctrl + Z</td><td>Undo last change</td></tr>
+                <tr><td>Ctrl + Shift + Z</td><td>Redo</td></tr>
+                <tr><td>Ctrl + \</td><td>Toggle sidebar visibility</td></tr>
+                <tr><td>Escape</td><td>Deselect element / switch to Page mode</td></tr>
+                <tr><td>1 — 4</td><td>Switch between visible tabs</td></tr>
+                <tr><td>Shift + Click</td><td>Batch-select multiple elements</td></tr>
+                <tr><td>Ctrl + Shift + C</td><td>Copy element style</td></tr>
+                <tr><td>Ctrl + Shift + V</td><td>Paste element style</td></tr>
+                <tr><td>?</td><td>Show shortcut overlay</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="footer">
+        <p>GlassStudio v1.1 — Built by <a href="https://github.com/daththeanalyst" target="_blank">Dath</a></p>
+        <p style="margin-top: 8px;">Zero dependencies &middot; ~3,200 lines &middot; MIT License</p>
+    </footer>
+
+    <!-- ═══ Editor Script ═══ -->
+    <script src="overlay-editor.js"></script>
+</body>
+</html>
