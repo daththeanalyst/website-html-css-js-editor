@@ -1149,6 +1149,62 @@
             if (pos.right) { showSidebarBtn.style.right = pos.right; showSidebarBtn.style.left = 'auto'; }
         }
 
+        // ── Build _els cache (must be before any bindings that use _els) ──
+        const $ = id => document.getElementById('ai-' + id);
+        _els = {
+            // Sliders + value labels
+            sliderPad: $('slider-pad'), valPad: $('val-pad'),
+            sliderMarg: $('slider-marg'), valMarg: $('val-marg'),
+            sliderRad: $('slider-rad'), valRad: $('val-rad'),
+            sliderBwidth: $('slider-bwidth'), valBwidth: $('val-bwidth'),
+            sliderTracking: $('slider-tracking'), valTracking: $('val-tracking'),
+            sliderOpacity: $('slider-opacity'), valOpacity: $('val-opacity'),
+            sliderGap: $('slider-gap'), valGap: $('val-gap'),
+            sliderImgW: $('slider-img-width'), valImgW: $('val-img-width'),
+            sliderImgH: $('slider-img-height'), valImgH: $('val-img-height'),
+            sliderFilGray: $('slider-fil-gray'), valFilGray: $('val-fil-gray'),
+            sliderFilSepia: $('slider-fil-sepia'), valFilSepia: $('val-fil-sepia'),
+            sliderFilBlur: $('slider-fil-blur'), valFilBlur: $('val-fil-blur'),
+            sliderFilBright: $('slider-fil-bright'), valFilBright: $('val-fil-bright'),
+            sliderFilCont: $('slider-fil-cont'), valFilCont: $('val-fil-cont'),
+            sliderShY: $('slider-sh-y'), sliderShBlur: $('slider-sh-blur'), sliderShAlpha: $('slider-sh-alpha'),
+            sliderTsX: $('slider-ts-x'), valTsX: $('val-ts-x'),
+            sliderTsY: $('slider-ts-y'), valTsY: $('val-ts-y'),
+            sliderTsBlur: $('slider-ts-blur'), valTsBlur: $('val-ts-blur'),
+            tsColor: $('ts-color'),
+            sliderGradAngle: $('slider-grad-angle'), valGradAngle: $('val-grad-angle'),
+            gradStart: $('grad-start'), gradEnd: $('grad-end'), gradPreview: $('grad-preview'),
+            sliderTransDur: $('slider-transition-dur'), valTransDur: $('val-transition-dur'),
+            sliderHoverScale: $('slider-hover-scale'), valHoverScale: $('val-hover-scale'),
+            transitionProp: $('transition-prop'), transitionEase: $('transition-ease'),
+            // Dropdowns
+            fontWeight: $('font-weight'), borderStyle: $('border-style'),
+            flexDirection: $('flex-direction'), justifyContent: $('justify-content'), alignItems: $('align-items'),
+            flexWrapBtn: $('flex-wrap-btn'),
+            // Containers
+            elementTree: $('element-tree'), historyList: $('history-list'),
+            presetsBox: $('presets-box'), flexgridControls: $('flexgrid-controls'),
+            cssEditor: $('css-editor'), presetCatSelect: $('preset-cat-select'),
+            // WCAG badge
+            contrastRatio: $('contrast-ratio'), badgeAA: $('badge-aa'), badgeAAA: $('badge-aaa'),
+            // Nav tabs
+            navText: $('nav-text'), navLayout: $('nav-layout'), navEffects: $('nav-effects'),
+            navAi: $('nav-ai'), navTree: $('nav-tree'),
+            // Tab content
+            tabText: document.getElementById('tab-text'),
+            tabLayout: document.getElementById('tab-layout'),
+            tabEffects: document.getElementById('tab-effects'),
+            tabAi: document.getElementById('tab-ai'),
+            tabTree: document.getElementById('tab-tree'),
+            // Scope-specific containers
+            imgControls: $('image-controls'), txtPadControls: $('text-layout-controls'),
+            imgFilters: $('image-filters-controls'), txtEffects: $('text-effects-controls'),
+            // Misc
+            batchBadge: $('batch-badge'), spacingVizBtn: $('btn-spacing-viz'),
+            exportStatus: $('export-status'), loading: $('editor-loading'),
+            responsiveLabel: $('responsive-label'),
+        };
+
         // Drag Physics
         const topBar = editorContainer.querySelector('.ai-editor-top-bar');
         let isDragging = false, startX, startY, startLeft, startTop;
@@ -1723,62 +1779,6 @@
                 e.preventDefault();
             }
         });
-
-        // ── Build _els cache (Phase 3 perf) ──
-        const $ = id => document.getElementById('ai-' + id);
-        _els = {
-            // Sliders + value labels
-            sliderPad: $('slider-pad'), valPad: $('val-pad'),
-            sliderMarg: $('slider-marg'), valMarg: $('val-marg'),
-            sliderRad: $('slider-rad'), valRad: $('val-rad'),
-            sliderBwidth: $('slider-bwidth'), valBwidth: $('val-bwidth'),
-            sliderTracking: $('slider-tracking'), valTracking: $('val-tracking'),
-            sliderOpacity: $('slider-opacity'), valOpacity: $('val-opacity'),
-            sliderGap: $('slider-gap'), valGap: $('val-gap'),
-            sliderImgW: $('slider-img-width'), valImgW: $('val-img-width'),
-            sliderImgH: $('slider-img-height'), valImgH: $('val-img-height'),
-            sliderFilGray: $('slider-fil-gray'), valFilGray: $('val-fil-gray'),
-            sliderFilSepia: $('slider-fil-sepia'), valFilSepia: $('val-fil-sepia'),
-            sliderFilBlur: $('slider-fil-blur'), valFilBlur: $('val-fil-blur'),
-            sliderFilBright: $('slider-fil-bright'), valFilBright: $('val-fil-bright'),
-            sliderFilCont: $('slider-fil-cont'), valFilCont: $('val-fil-cont'),
-            sliderShY: $('slider-sh-y'), sliderShBlur: $('slider-sh-blur'), sliderShAlpha: $('slider-sh-alpha'),
-            sliderTsX: $('slider-ts-x'), valTsX: $('val-ts-x'),
-            sliderTsY: $('slider-ts-y'), valTsY: $('val-ts-y'),
-            sliderTsBlur: $('slider-ts-blur'), valTsBlur: $('val-ts-blur'),
-            tsColor: $('ts-color'),
-            sliderGradAngle: $('slider-grad-angle'), valGradAngle: $('val-grad-angle'),
-            gradStart: $('grad-start'), gradEnd: $('grad-end'), gradPreview: $('grad-preview'),
-            sliderTransDur: $('slider-transition-dur'), valTransDur: $('val-transition-dur'),
-            sliderHoverScale: $('slider-hover-scale'), valHoverScale: $('val-hover-scale'),
-            transitionProp: $('transition-prop'), transitionEase: $('transition-ease'),
-            // Dropdowns
-            fontWeight: $('font-weight'), borderStyle: $('border-style'),
-            flexDirection: $('flex-direction'), justifyContent: $('justify-content'), alignItems: $('align-items'),
-            flexWrapBtn: $('flex-wrap-btn'),
-            // Containers
-            elementTree: $('element-tree'), historyList: $('history-list'),
-            presetsBox: $('presets-box'), flexgridControls: $('flexgrid-controls'),
-            cssEditor: $('css-editor'), presetCatSelect: $('preset-cat-select'),
-            // WCAG badge
-            contrastRatio: $('contrast-ratio'), badgeAA: $('badge-aa'), badgeAAA: $('badge-aaa'),
-            // Nav tabs
-            navText: $('nav-text'), navLayout: $('nav-layout'), navEffects: $('nav-effects'),
-            navAi: $('nav-ai'), navTree: $('nav-tree'),
-            // Tab content
-            tabText: document.getElementById('tab-text'),
-            tabLayout: document.getElementById('tab-layout'),
-            tabEffects: document.getElementById('tab-effects'),
-            tabAi: document.getElementById('tab-ai'),
-            tabTree: document.getElementById('tab-tree'),
-            // Scope-specific containers
-            imgControls: $('image-controls'), txtPadControls: $('text-layout-controls'),
-            imgFilters: $('image-filters-controls'), txtEffects: $('text-effects-controls'),
-            // Misc
-            batchBadge: $('batch-badge'), spacingVizBtn: $('btn-spacing-viz'),
-            exportStatus: $('export-status'), loading: $('editor-loading'),
-            responsiveLabel: $('responsive-label'),
-        };
 
         renderPresetsUI();
 
